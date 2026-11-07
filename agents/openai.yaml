@@ -1,4 +1,4 @@
 interface:
-  display_name: "多机 Codex 协同"
+  display_name: "多机 Codex 协同工作"
   short_description: "通过 Tailscale 与 SSH 连接多台电脑，在同一 Codex 界面查看进度、继续对话"
   default_prompt: "请使用 $codex-workspace-management 接入其他电脑，让聊天集中显示在当前 Codex，能直接查看进度并下达指令。"

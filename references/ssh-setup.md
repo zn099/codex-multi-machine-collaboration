@@ -170,7 +170,7 @@ if (!(Test-Path $p) -or !(Select-String -Path $p -SimpleMatch $key.Split(' ')[1]
 
 如果提示权限不正确，检查该用户目录的 ACL，并确认授权文件属于实际登录的账户。
 
-## 4. 给当前电脑写一个好记的别名
+## 4. 配置主机别名
 
 **在当前电脑编辑 SSH 配置，保留原有内容。**
 
@@ -198,7 +198,7 @@ Host classroom
 
 这份配置只对当前电脑生效。在另一台 Windows 上直接输入 `ssh company`，如果那台还没配置同名 Host，就会报找不到主机。
 
-## 5. 核对指纹，再试登录
+## 5. 验证指纹与登录
 
 **先在目标电脑获取它自己的 ED25519 主机指纹。**
 
@@ -224,4 +224,4 @@ ssh -o HostKeyAlgorithms=ssh-ed25519 company whoami
 
 如果 SSH 卡在超时，先按[连接排查](remote-computers.md)检查端口与网络。只在证据表明被防火墙拦截时添加相应放行，范围限定到自己的 Tailscale 地址；不关闭整个防火墙，也不在路由器映射公网 22 端口。
 
-登录成功后，回到[教程第三步](../README.md#第三步确认远端的-codex-能在-ssh-里运行)，把这条连接交给 Codex 使用。
+登录成功后，继续[配置远端 Codex](setup.md#3-配置远端-codex)。
