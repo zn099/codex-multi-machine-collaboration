@@ -1,8 +1,8 @@
-# SSH 配置：先把一个方向连通
+# SSH 配置
 
-这里用“当前电脑 → 目标电脑”来讲。当前电脑可以是 Ubuntu 或 Windows；目标电脑就是你希望 Codex 在上面执行任务的机器。
+当前电脑是发起连接的控制端，目标电脑是运行 Codex 任务的执行端。两端都可以使用 Ubuntu 或 Windows。
 
-完成的标志很简单：在当前电脑运行 `ssh 别名 whoami`，看到目标电脑的正确用户。
+配置完成后，在当前电脑运行 `ssh 别名 whoami`，应返回目标电脑的用户。
 
 ## 1. 在目标电脑开启 SSH 服务
 
@@ -153,7 +153,7 @@ if ($LASTEXITCODE -ne 0) { throw '权限设置失败，请保留错误信息。'
 icacls.exe $p
 ```
 
-最后查看 ACL，应只有 Administrators 和 SYSTEM 的访问授权。若已有其他显式权限、所有者异常或仍拒绝访问，先查清原因，不用 takeown 或放开 Everyone 来硬改。默认配置下这个文件服务于管理员组账户，具体访问规则见[微软密钥说明](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement)。
+最后查看 ACL，应只有 Administrators 和 SYSTEM 的访问授权。若已有其他显式权限、所有者异常或仍拒绝访问，先检查现有权限，避免直接使用 takeown 或授予 Everyone 访问权限。默认配置下这个文件服务于管理员组账户，具体访问规则见[微软密钥说明](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement)。
 
 **如果是普通本地账户：** 用那个账户自己的普通 PowerShell，替换公钥后执行：
 
@@ -168,7 +168,7 @@ if (!(Test-Path $p) -or !(Select-String -Path $p -SimpleMatch $key.Split(' ')[1]
 }
 ```
 
-如果提示文件权限不正确，检查该用户目录的 ACL；不要把普通账户的文件搬到管理员目录碰运气。
+如果提示权限不正确，检查该用户目录的 ACL，并确认授权文件属于实际登录的账户。
 
 ## 4. 给当前电脑写一个好记的别名
 
