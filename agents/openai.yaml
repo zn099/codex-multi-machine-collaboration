@@ -1,4 +1,4 @@
 interface:
-  display_name: "Codex 统一工作法"
-  short_description: "统一规划 Codex 项目、文件、跨设备任务与交接，并依据实际证据验收结果"
-  default_prompt: "请使用 $codex-workspace-management 梳理当前项目的工作目录、执行设备、任务计划和验收方式，并继续完成已授权工作。"
+  display_name: "Codex 多电脑聊天管理"
+  short_description: "通过 Tailscale 和 SSH 连接多台电脑，在 Codex 中看进度、继续聊天和发送任务"
+  default_prompt: "请使用 $codex-workspace-management 接入我的其他电脑，并查看各台电脑上可以继续的 Codex 聊天。"
