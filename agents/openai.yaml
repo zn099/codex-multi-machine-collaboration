@@ -1,4 +1,4 @@
 interface:
   display_name: "Codex 多电脑聊天互联"
   short_description: "用 Tailscale 连接多台电脑，让 Codex 聊天集中显示，直接查看进度并下达指令"
-  default_prompt: "请使用 $codex-workspace-management 接入我的其他电脑，让各台电脑的聊天一起显示在当前 Codex 界面里，我能直接点开看进度并在原聊天中继续输入指令。"
+  default_prompt: "请使用 $codex-workspace-management 接入其他电脑，让聊天集中显示在当前 Codex，能直接查看进度并下达指令。"

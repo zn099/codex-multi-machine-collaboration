@@ -2,9 +2,9 @@
 
 公司一台 Ubuntu，教室一台 Windows，家里还有一台个人电脑。各台电脑上都跑着任务，换个地方工作，就得挨个找它们的进度。
 
-**连好以后，这几台电脑的 Codex 聊天可以一起显示在你眼前的 Codex 界面中。点开哪条，就能看那条的工作进度；想补充要求，直接在原聊天里输入。** 公司电脑继续跑公司的任务，教室电脑继续做教室的工作，你在一个窗口里就能照看它们。
+**连好以后，几台电脑的 Codex 聊天一起显示在同一个界面中。点开看进度，在原聊天里直接下达指令。**
 
-这份教程带你先用 **Tailscale** 连通电脑，再用 **SSH** 把它们接入 Codex。仓库也提供配套 [Skill](SKILL.md)，让 Codex 帮你完成配置、检查连接，以及解决远端聊天没有显示的问题。
+先用 **Tailscale** 连通电脑，再通过 **SSH** 接入 Codex。可以照下面的步骤配置，也可以使用配套 [Skill](SKILL.md)。
 
 ## 连好以后，你会怎样使用
 
@@ -14,7 +14,7 @@
 2. **在原聊天输入，继续下指令。** 在输入框里补充要求、回答问题或安排下一步，消息会交给那条聊天所在的电脑处理。
 3. **换一条聊天，查看另一台电脑。** 再点开教室电脑上的聊天，就能接着看它做到哪里了。
 
-多台电脑提供执行环境，同一个 Codex 窗口提供聊天入口。任务仍在各自的电脑上运行，文件也留在原来的位置。
+任务在各自的电脑上运行，文件留在原来的位置。
 
 ```mermaid
 flowchart LR
@@ -38,7 +38,7 @@ curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up
 ```
 
-打开终端给出的登录链接，完成登录。已经安装并登录的机器直接往下走，不要为了照教程重新退出账号。
+打开终端给出的链接完成登录。已安装并登录的电脑跳过这一步。
 
 然后在每台电脑的终端或 PowerShell 中运行：
 
@@ -50,7 +50,7 @@ whoami
 
 记下地址和用户名。这里最容易弄混的是：**电脑名称、登录用户名和 SSH 别名是三回事。** Windows 的 whoami 如果显示 `MY-PC\alice`，本地账户名就是 alice，不是 MY-PC。
 
-可以给自己留这样一张表，实际内容留在自己的电脑上：
+记下每台电脑的连接信息：
 
 | 用来做什么 | SSH 别名 | Tailscale 地址 | SSH 登录用户 |
 | --- | --- | --- | --- |
@@ -65,7 +65,7 @@ tailscale ping --c 5 <目标电脑的Tailscale地址>
 tailscale ping --tsmp --c 5 <目标电脑的Tailscale地址>
 ```
 
-管理页面的绿点只说明设备有在线状态。这里要看是否实际收到回包。看到 `via DERP(...)` 表示用了中转，不等于失败；先把连接用起来，不必一开始追求直连。
+以实际收到回包为准。`via DERP(...)` 表示通过中转连接，可以正常使用。
 
 ## 第二步：先让 SSH 真正登录进去
 
@@ -73,7 +73,7 @@ tailscale ping --tsmp --c 5 <目标电脑的Tailscale地址>
 
 Tailscale 提供网络，OpenSSH 提供远程登录。本教程使用“普通 OpenSSH 走 Tailscale 地址”，不需要额外启用 Tailscale SSH 功能。
 
-按目标系统照着 [SSH 配置步骤](references/ssh-setup.md) 做一次。里面分别写了 Ubuntu 和 Windows 的服务、公钥、指纹以及客户端别名，已经做好的步骤可以跳过。
+按目标系统完成 [SSH 配置](references/ssh-setup.md)：开启服务、添加公钥、配置别名并核对指纹。已有配置直接检查。
 
 完成后，在当前电脑运行：
 
@@ -112,7 +112,7 @@ ssh company "codex --version"
 ssh classroom "codex --version"
 ```
 
-只检查已配置的目标。**远端桌面能运行、SSH 中却说找不到 codex，通常要查 SSH 环境里的 PATH。** 不要先重装所有东西。Windows 可以进一步运行 `ssh classroom "where.exe codex"`。
+只检查已配置的目标。SSH 中找不到 codex 时，检查远端 PATH；Windows 可运行 `ssh classroom "where.exe codex"`。
 
 ## 第四步：把远端电脑的聊天接进当前 Codex
 
@@ -124,7 +124,7 @@ ssh classroom "codex --version"
 4. 回到侧边栏／聊天列表，找到这台远端电脑上的已有聊天，点开一条熟悉的，确认能看到它原来的记录和当前状态。
 5. 按同样方法加入其他电脑。它们的聊天也会出现在当前客户端中，你可以在这些聊天之间直接切换。
 
-**这一步的完成标志是：远端电脑的聊天已经在当前界面里显示，并且可以点开阅读。** 仅看到连接开关亮起，还要继续确认聊天是否加载成功。不同版本的布局和分组方式可能不同；查看聊天的主机或运行位置标识，可以确认它属于哪台电脑。[官方 SSH 接入说明](https://learn.chatgpt.com/docs/remote-connections#connect-to-an-ssh-host)给出了连接设置的入口。
+**确认远端聊天已经显示，并且能点开阅读。** 通过主机或运行位置标识区分电脑。不同版本的布局可能不同，连接入口见 [官方说明](https://learn.chatgpt.com/docs/remote-connections#connect-to-an-ssh-host)。
 
 如果终端 SSH 已经成功，而 Codex 仍显示连接失败，请看 [SSH 好了，Codex 还连不上](references/remote-computers.md#ssh-好了codex-还连不上)。若连接成功却找不到旧聊天，继续看下面的排查方法。
 
@@ -140,8 +140,6 @@ ssh classroom "codex --version"
 
 找到要继续的那条聊天后，直接在它的输入框里输入并发送。你的要求会进入原来的对话，沿用它的上下文，由对应电脑上的 Codex 处理；后续进度和结果也显示在这里。
 
-例如，公司电脑正在处理资料，你可以在那条聊天中补一句“下一步先检查表格中的单位”。发完后切换到教室电脑的聊天，继续处理另一件事。日常查看和下达指令都在这些聊天本身完成。
-
 ### 要开新任务，先选执行它的电脑
 
 在目标电脑的项目中创建新聊天，确认主机和项目路径，再输入任务。继续旧任务时直接打开旧聊天，这样前面讨论过的要求还在同一段对话里。
@@ -150,7 +148,7 @@ ssh classroom "codex --version"
 
 先确认目标连接已启用，再检查侧边栏当前的主机、项目分组或筛选范围。接着核对 SSH 是否登录了原来使用 Codex 的系统用户，以及远端 Codex 服务使用的数据目录。Windows 用户改名后，个人目录可能仍是旧名称；不同账户或不同 `CODEX_HOME` 也可能读到不同历史。
 
-这里的“显示到一起”是由当前客户端集中展示各个主机的聊天，记录仍由各自的主机保存。某台电脑的旧聊天缺失时，应排查它所连接的用户、服务和历史来源。具体步骤见 [让远端聊天显示出来](references/codex-chats.md)。
+聊天记录仍保存在各自的主机上。详细排查见 [让远端聊天显示出来](references/codex-chats.md)。
 
 ## 第六步：离开电脑前，确认它能一直被找到
 
@@ -160,11 +158,11 @@ Windows 如果希望注销后 Tailscale 仍在线，可在托盘图标的 **Pref
 
 离开前从另一台电脑做一次完整检查：能登录 SSH、能打开远端聊天、能收到远端回复。短暂断网后先重连原来的主机、查看原聊天状态，再决定是否重试；不要直接把同一任务再发一遍。
 
-## 不想自己逐项配置，就把 Skill 交给 Codex
+## 安装和使用 Skill
 
-Skill 的名字沿用仓库的 `codex-workspace-management`，界面显示为“Codex 多电脑聊天互联”。装在你准备用来管理其他电脑的那台机器上即可；换另一台机器来管理时，再在那台安装。
+在发起连接的电脑上安装，需先安装 Git。
 
-Ubuntu／macOS，需要 Git：
+Ubuntu／macOS：
 
 ```bash
 mkdir -p "$HOME/.agents/skills"
@@ -172,7 +170,7 @@ git clone https://github.com/zn099/codex-workspace-management.git \
   "$HOME/.agents/skills/codex-workspace-management"
 ```
 
-Windows PowerShell，需要 Git：
+Windows PowerShell：
 
 ```powershell
 $skillRoot = Join-Path $env:USERPROFILE '.agents\skills'
@@ -180,7 +178,7 @@ New-Item -ItemType Directory -Force $skillRoot | Out-Null
 git clone https://github.com/zn099/codex-workspace-management.git (Join-Path $skillRoot 'codex-workspace-management')
 ```
 
-已经安装过就更新原目录，不再克隆一份。在没有未处理的本地修改时，可以进入技能目录执行 `git pull --ff-only`。技能发现方式见 [官方说明](https://learn.chatgpt.com/docs/build-skills#where-to-save-skills)。
+已安装且没有本地修改时，在技能目录执行 `git pull --ff-only` 更新。安装位置见 [官方说明](https://learn.chatgpt.com/docs/build-skills#where-to-save-skills)。
 
 接着在 Codex 新聊天中说：
 
@@ -211,4 +209,4 @@ $codex-workspace-management
 | 连上后找不到某条聊天 | 回到第五步，核对主机、账户、数据目录和客户端能力 |
 | 时好时坏，一直重连失败 | [断线与重连](references/remote-computers.md#一会儿能连一会儿又断) |
 
-本教程整理自 Ubuntu 与 Windows 多机联调。使用时需要客户端提供 SSH 连接和远端聊天功能；配置示例使用占位值，不包含个人设备、账号或密钥。社区项目，采用 [MIT 许可](LICENSE)。
+[MIT License](LICENSE)
